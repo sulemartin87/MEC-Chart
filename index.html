@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="chart.js" type="text/javascript"></script>
+    <meta http-equiv="Refresh" content="300"> 
     <title>Document</title>
     <style>
         #loader {
@@ -21,6 +22,22 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th {
+  background-color: #4CAF50;
+  color: white;
+}
     </style>
 </head>
 <body>
@@ -30,6 +47,27 @@
             <canvas id="myChart" class="chartjs" width="400" height="400"></canvas>
 
     </div>
+
+    <table>
+        <tr>
+            <th >Registered voters</th>
+            <th> total votes cast</th>
+            <th>total valid votes</th>
+            <th >null and void votes</th>
+            <th >total centers</th>
+            <th >published centers</th>
+        </tr>
+        <tr>
+          <td id="registered"></td>
+          <td id="cast"></td>
+          <td id="valid"></td>
+          <td id="voided"></td>
+          <td id="total_centers"></td>
+          <td id="published"></td>
+        </tr>
+       
+      </tr>
+      </table>
     
 <script>
 
@@ -48,8 +86,14 @@
     for (let index = 0; index < r.length; index++) {
         f.push(r[index].CandidateDisplayName);
         t.push(r[index].Votes);
-        createChart(f, t);
     }
+    document.getElementById("registered").innerHTML = results.data.presidential.total_registered_voters;
+    document.getElementById("cast").innerHTML = results.data.presidential.total_votes_cast;
+    document.getElementById("valid").innerHTML = results.data.presidential.total_valid_votes;
+    document.getElementById("voided").innerHTML = results.data.presidential.null_and_void_votes;
+    document.getElementById("total_centers").innerHTML = results.data.presidential.total_centers;
+    document.getElementById("published").innerHTML = results.data.presidential.published_centers;
+    createChart(f, t, results.data.presidential.total_valid_votes);
     }else {
         document.getElementById("loader").style.display = "none";
         alert("Could not fetch data from mec servers");
@@ -62,7 +106,7 @@
     } catch (e) {
 }
 
-function createChart(f, t) {
+function createChart(f, t, total) {
     document.getElementById("loader").style.display = "none";
     var ctx = document.getElementById('myChart').getContext('2d');
     ctx.height = 500;
@@ -73,23 +117,25 @@ var myChart = new Chart(ctx, {
     data: {
         labels: f,
         datasets: [{
-            label: '# of Votes',
+            label: total + ' Votes',
             data: t,
             backgroundColor: [
+                'rgba(103, 241, 108, 0.2)',
                 'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
                 'rgba(255, 206, 86, 0.2)',
                 'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
             ],
             borderColor: [
+                'rgba(103, 241, 108, 1)',
                 'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
                 'rgba(255, 206, 86, 1)',
                 'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
+                'rgba(255, 206, 86, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(54, 162, 235, 1)',
             ],
             borderWidth: 1
         }]
